@@ -336,6 +336,7 @@
     <Content Include="Config\404handlers.config" />
     <Content Include="App_Plugins\NestedContent\package.manifest" />
     <Content Include="App_Plugins\Test\package.manifest" />
+    <Content Include=".gitignore" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

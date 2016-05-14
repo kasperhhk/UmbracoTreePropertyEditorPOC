@@ -5,8 +5,10 @@
 
     function ($scope, contentTypeResource) {
 
+        var watches = [];
+
         $scope.model.value = $scope.model.value || [];
-        $scope.property = unloadProp();
+        $scope.current = unloadProp({});
         $scope.structure = createLocalStructure();
 
         $scope.addRoot = function() {
@@ -34,48 +36,64 @@
                 lm.delete = function() {
                     removeFromList(model, parent.model.children);
                     removeFromList(lm, parent.children);
+                    $scope.current = unloadProp({});
+                    $scope.propertyForm.$setDirty();
                 };
             }
-            lm.create = function() {
-                var o = createModel();
+            lm.create = function (name) {
+                if (!name)
+                    return;
+
+                var o = createModel(name);
                 model.children.push(o);
-                lm.children.push(createLocalModel(o, lm, true));
+                var nlm = createLocalModel(o, lm, true);
+                lm.children.push(nlm);
+                $scope.loadProp(nlm);
             };
+
+            return lm;
         }
 
         function removeFromList(value, list) {
-            var idx = list.findIndex(value);
+            var idx = list.indexOf(value);
             delete list[idx];
             list.splice(idx, 1);
         }
 
-        function createModel() {
+        function createModel(name) {
             return {
                 value: undefined,
+                name: name,
                 children: []
             }
         }
 
-        function unloadProp() {
-            return { loaded: false };
+        function unloadProp(obj) {
+            obj.loaded = false;
+            while (watches.length) {
+                var w = watches.pop();
+                w(); //deregister
+            }
+            return obj;
         }
 
-        function loadProp(model) {
-            $scope.property = unloadProp();
+        $scope.loadProp = function(localModel) {
+            $scope.current = unloadProp(localModel);
             contentTypeResource.getPropertyTypeScaffold($scope.model.config.NCTestPrevalue)
-            .then(function (result) {
-                $scope.property = result;
-                $scope.property.value = model.value;
-                $scope.$watch(function() {
-                        return $scope.property.value;
-                    },
-                    function(newValue, oldValue) {
-                        if (newValue !== oldValue) {
-                            model.value = newValue;
-                        }
-                    });
-                $scope.property.loaded = true;
-            });
-        }
+                .then(function(result) {
+                    $scope.current.property = result;
+                    $scope.current.property.value = localModel.model.value;
+                    var w = $scope.$watch(function() {
+                            return $scope.current.property.value;
+                        },
+                        function(newValue, oldValue) {
+                            if (newValue !== oldValue) {
+                                localModel.model.value = newValue;
+                            }
+                        });
+                    watches.push(w);
+                    $scope.current.loaded = true;
+                });
+        };
     }
 ]);

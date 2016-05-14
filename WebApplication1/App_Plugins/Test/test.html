@@ -1,3 +1,23 @@
 ﻿<div ng-controller="Test.Controller">
-    <umb-editor model="property" ng-if="property.loaded"></umb-editor>
+    <script type="text/ng-template" id="field_renderer.html">
+        <span ng-click="loadProp(field)">{{field.model.name}}</span>
+        <ul>
+            <li ng-repeat="field in field.children" ng-include="'field_renderer.html'"></li>
+        </ul>
+    </script>
+
+    <ul>
+        <li ng-repeat="field in structure.children" ng-include="'field_renderer.html'"></li>
+    </ul>
+    <input type="text" ng-model="rootName"/>
+    <button type="button" ng-click="structure.create(rootName)">Create root</button>
+    <hr/>
+
+    <div ng-if="current.loaded">
+        <span>{{current.model.name}}</span>
+        <umb-editor model="current.property"></umb-editor>
+        <input type="text" ng-model="createName"/>
+        <button type="button" ng-click="current.create(createName)">Create sub</button>
+        <button type="button" ng-click="current.delete()">Delete this sub</button>
+    </div>
 </div>

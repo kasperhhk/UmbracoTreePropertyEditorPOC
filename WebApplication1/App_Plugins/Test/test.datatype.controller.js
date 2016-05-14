@@ -1,9 +1,18 @@
 ﻿angular.module("umbraco").controller("Test.Datatype", [
 
     "$scope",
-    "contentTypeResource",
+    "dataTypeResource",
 
     function ($scope, dataTypeResource) {
-        $scope.opts = dataTypeResource.getAll().map(function(d) { return { value: d.Id, name: d.Name }; });
+
+        $scope.update = function () {
+            $scope.model.value = $scope.select.id;
+        };
+
+        dataTypeResource.getAll()
+            .then(function (result) {
+                $scope.opts = [{ name: "--choose--", id: 0 }].concat(result);
+                $scope.select = $scope.opts.find(function (c) { return c.id + "" === $scope.model.value });
+            });
     }
 ]);

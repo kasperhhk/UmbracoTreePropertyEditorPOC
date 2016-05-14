@@ -306,6 +306,7 @@
   <ItemGroup>
     <Content Include="App_Plugins\Test\test.datatype.controller.js" />
     <Content Include="App_Plugins\Test\test.datatype.html" />
+    <Content Include="App_Plugins\Test\test.html" />
     <Content Include="packages.config" />
     <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
     <Content Include="Views\Web.config" />

@@ -1,6 +1,4 @@
 ﻿<div ng-controller="Test.Datatype">
-    <select ng-model="model.value" required>
-        <option value="">--choose--</option>
-        <option ng-repeat="opt in opts" value="{{opt.value}}">{{opt.name}}</option>
+    <select ng-model="select" ng-required ng-options="option.name for option in opts track by option.id" ng-change="update()">
     </select>
 </div>

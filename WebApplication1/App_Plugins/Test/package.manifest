@@ -1,5 +1,6 @@
 ﻿{
     "javascript" : [
         '~/App_Plugins/Test/test.controller.js'
+		'~/App_Plugins/Test/test.datatype.controller.js'
     ]
 }
